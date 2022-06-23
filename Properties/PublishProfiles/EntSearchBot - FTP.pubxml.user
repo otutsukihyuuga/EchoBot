@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAA3G9g1Gqn06U5P6luXEj2AAAAAACAAAAAAADZgAAwAAAABAAAACUy2t7e5F6+c9iTgxlMi7oAAAAAASAAACgAAAAEAAAAHFxNYNLUhpIdgJh7ttZGX6AAAAA+H9YA2XmVl7lf1GF6DFipA0JZDrUKMJkd8EddwzHPTgxSasI94BsOCq2vtBaxHP8p+0QjQxv3pK68un5WmhyLfcMEkjAferjJxJdZ3rwcjhMUeJGznjN5izubg7GxaHaAlUaqAkdBR6aEAD54sBBGPkYZSRl63s8nm3ob5I2n8UUAAAAROvHBrmcDxT2q46IUbEvu6iltys=</EncryptedPassword>
+    <_PublishTargetUrl>ftp://waws-prod-bm1-009.ftp.azurewebsites.windows.net/site/wwwroot</_PublishTargetUrl>
+    <History>False|2022-06-17T05:23:11.4624941Z;False|2022-06-15T17:54:31.1853071+05:30;False|2022-06-15T17:53:16.7658724+05:30;</History>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="wwwroot/default.htm">
+      <publishTime>08/06/2022 09:33:30</publishTime>
+    </File>
+    <File Include="wwwroot/images/hello.jfif">
+      <publishTime>08/06/2022 14:22:16</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

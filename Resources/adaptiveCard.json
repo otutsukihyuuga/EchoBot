@@ -1,0 +1,86 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.3",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Hi!! Hello ${name}",
+      "wrap": true,
+      "size": "Large"
+    },
+    {
+      "type": "TextBlock",
+      "text": "This is an Adaptive Card",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "All of this card's Designing is done in JSON",
+      "wrap": true,
+      "isSubtle": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "This are the series u Like:",
+      "wrap": true
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "items": [
+            {
+              "type": "TextBlock",
+              "weight": "bolder",
+              "text": "Series"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "items": [
+            {
+              "type": "TextBlock",
+              "weight": "bolder",
+              "text": "Genre"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "$data": "${series}",
+          "columns": [
+            {
+              "type": "Column",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "separator": true,
+                  "text": "${name}"
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "separator": true,
+                  "text": "${genre}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+

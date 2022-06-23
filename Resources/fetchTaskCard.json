@@ -1,0 +1,32 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.4",
+  "body": [
+    {
+      "type": "Input.Text",
+      "placeholder": "Enter query",
+      "id": "query"
+    },
+    {
+      "type": "ActionSet",
+      "actions": [
+        {
+          "type": "Action.Submit",
+          "title": "Get google results",
+          "data": {
+            "id": "google"
+          }
+        },
+        {
+          "type": "Action.Submit",
+          "title": "Get youtube results",
+          "data": {
+            "id": "youtube"
+          }
+        }
+      ]
+    }
+  ],
+  "id": "Search"
+}

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.5/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.5",
+  "version": "1.0",
+  "id": "c1e2c713-cfed-454b-9392-950da851d0bf",
+  "packageName": "com.microsoft.teams.samples.searchExtension",
+  "developer": {
+    "name": "Microsoft Corp",
+    "websiteUrl": "https://example.azurewebsites.net",
+    "privacyUrl": "https://example.azurewebsites.net/privacy",
+    "termsOfUseUrl": "https://example.azurewebsites.net/termsofuse"
+  },
+  "name": {
+    "short": "search-extension-settings",
+    "full": "Microsoft Teams V4 Search Messaging Extension Bot and settings"
+  },
+  "description": {
+    "short": "Microsoft Teams V4 Search Messaging Extension Bot and settings",
+    "full": "Sample Search Messaging Extension Bot using V4 Bot Builder SDK and V4 Microsoft Teams Extension SDK"
+  },
+  "icons": {
+    "outline": "icon-outline.png",
+    "color": "icon-color.png"
+  },
+  "accentColor": "#abcdef",
+  "composeExtensions": [
+    {
+      "botId": "c1e2c713-cfed-454b-9392-950da851d0bf",
+      "canUpdateConfiguration": true,
+      "commands": [
+        {
+          "id": "Search",
+          "type": "query",
+          "context": [ "compose","commandBox" ],
+          "title": "Get suggestions",
+          "parameters": [
+            {
+              "name": "query",
+              "title": "Enter query",
+              "description": "Get suggestion based on query",
+              "inputType": "text"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "validDomains": [
+    "https://entsearchbot.azurewebsites.net"
+  ]
+}
