@@ -1,0 +1,246 @@
+﻿{
+  "type": "AdaptiveCard",
+  "body": [
+    {
+      "type": "TextBlock",
+      "size": "Large",
+      "weight": "Bolder",
+      "text": "${TypeofContent} search Results for ${query}:"
+    },
+    {
+      "type": "ColumnSet",
+      "$data": "${result}",
+      "id": "cardSet${number}",
+      "separator": true,
+      "columns": [
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "ColumnSet",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "items": [
+                    {
+                      "type": "Image",
+                      "url": "${searchIcon}",
+                      "altText": "Search icon",
+                      "height": "20px",
+                      "horizontalAlignment": "right"
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Result ${number}"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "ColumnSet",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Document No",
+                      "size": "small",
+                      "weight": "bolder",
+                      "wrap": true
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "${Document}",
+                      "size": "small",
+                      "spacing": "none",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Project",
+                      "size": "small",
+                      "weight": "bolder",
+                      "wrap": true
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "${Project}",
+                      "size": "small",
+                      "spacing": "none",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Type of Content",
+                      "size": "small",
+                      "weight": "bolder",
+                      "wrap": true
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "${Context}",
+                      "size": "small",
+                      "spacing": "none",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "selectAction": {
+                    "type": "Action.ToggleVisibility",
+                    "targetElements": [
+                      "cardContent${number}",
+                      "showDetail${number}",
+                      "hideDetail${number}"
+                    ]
+                  },
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "id": "showDetail${number}",
+                      "horizontalAlignment": "Center",
+                      "color": "Accent",
+                      "size": "small",
+                      "text": "View More",
+                      "wrap": true
+                    },
+                    {
+                      "type": "TextBlock",
+                      "id": "hideDetail${number}",
+                      "horizontalAlignment": "Center",
+                      "color": "Accent",
+                      "size": "small",
+                      "text": "View Less",
+                      "wrap": true,
+                      "isVisible": false
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "Container",
+              "id": "cardContent${number}",
+              "isVisible": false,
+              "spacing": "None",
+              "style": "emphasis",
+              "bleed": true,
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "Project Description",
+                  "size": "small",
+                  "weight": "bolder",
+                  "wrap": true
+                },
+                {
+                  "type": "TextBlock",
+                  "size": "small",
+                  "text": "${Description}",
+                  "wrap": true
+                },
+                {
+                  "type": "TextBlock",
+                  "text": "${type}",
+                  "size": "small",
+                  "weight": "bolder",
+                  "wrap": true
+                },
+                {
+                  "type": "TextBlock",
+                  "size": "small",
+                  "text": "${Answer}",
+                  "wrap": true
+                },
+                {
+                  "type": "Container",
+                  "style": "good",
+                  "id": "getCard${number}",
+                  "items": [
+                    {
+                      "type": "ColumnSet",
+                      "columns": [
+                        {
+                          "type": "Column",
+                          "width": "stretch",
+                          "selectAction": {
+                            "type": "Action.ToggleVisibility",
+                            "targetElements": [
+                              "hideDetail${number}",
+                              "getCard${number}",
+                              {
+                                "elementId": "cardSetone",
+                                "isVisible": false
+                              },
+                              {
+                                "elementId": "cardSettwo",
+                                "isVisible": false
+                              },
+                              {
+                                "elementId": "cardSetthree",
+                                "isVisible": false
+                              },
+                              {
+                                "elementId": "cardSetfour",
+                                "isVisible": false
+                              },
+                              {
+                                "elementId": "cardSetfive",
+                                "isVisible": false
+                              },
+                              {
+                                "elementId": "cardSet${number}",
+                                "isVisible": true
+                              }
+                            ]
+                          },
+                          "verticalContentAlignment": "Center",
+                          "items": [
+                            {
+                              "type": "TextBlock",
+                              "size": "small",
+                              "text": "Get Card",
+                              "weight": "bolder"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.4"
+}

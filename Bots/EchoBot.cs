@@ -18,6 +18,9 @@ using Microsoft.Bot.Schema.Teams;
 using Microsoft.Bot.Builder.Teams;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Data.SqlClient;
+using AdaptiveCards;
+using System.Data;
 
 namespace EchoBot1.Bots
 {
@@ -26,14 +29,106 @@ namespace EchoBot1.Bots
         public string name;
         public string genre;
     }
+    class Result
+    {
+        public string Document;
+        public string Project;
+        public string Answer;
+        public string Context;
+        public string Description;
+        public string number;
+        public string searchIcon;
+        public string type;
+    }
     public class EchoBot : TeamsActivityHandler
     {
+        Dictionary<int, string> number2word = new() {
+                                  {1, "one"},
+                                  {2, "two"},
+                                {3, "three"},
+            { 4,"four"},
+            { 5,"five"}
+        };
         string helloImage;
+        string searchIcon;
         private IConfiguration configuration;
+        SqlConnection connection = new SqlConnection("Server=tcp:suggestion-db.database.windows.net,1433;Initial Catalog=suggestion-db;Persist Security Info=False;User ID=pratham;Password=P11112001@p;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=1000;");
+
+        //db functions
+        List<string> GetTypeofContents(string query, string user)
+        {
+            List<string> Contents = new();
+            try
+            {
+                connection.Open();
+                using SqlCommand command = new("GetTypeofContents", connection);
+                command.Parameters.Add("@query", SqlDbType.NVarChar).Value = query;
+                command.Parameters.Add("@user", SqlDbType.NVarChar).Value = user;
+                command.CommandType = CommandType.StoredProcedure;
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    string content = reader["TypeOfContent"].ToString();
+                    Contents.Add(content);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return Contents;
+        }
+        List<(string, string, string, string, string, string)> GetAnswer(string query,string TypeofContent, string user)
+        {
+            string storedProcedure;
+            if (TypeofContent == "Question")
+                storedProcedure = "GetTop5Question";
+            else
+                storedProcedure = "GetTop5";
+
+            List<(string, string, string, string, string, string)> answers = new();
+
+            try
+            {
+                connection.Open();
+                using SqlCommand command = new(storedProcedure, connection);
+                command.Parameters.Add("@query", SqlDbType.NVarChar).Value = query;
+                if (TypeofContent != "Question")
+                    command.Parameters.Add("@TypeofContent", SqlDbType.NVarChar).Value = TypeofContent;
+                command.Parameters.Add("@user", SqlDbType.NVarChar).Value = user;
+                command.CommandType = CommandType.StoredProcedure;
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    (string, string, string, string, string, string) answer;
+                    answer.Item1 = reader["ID"].ToString();
+                    if (TypeofContent == "Question")
+                        answer.Item2 = reader["Answer"].ToString();
+                    else
+                        answer.Item2 = reader["Title"].ToString();
+                    answer.Item3 = reader["DocumentNo"].ToString();
+                    answer.Item4 = reader["Project"].ToString();
+                    answer.Item5 = reader["ProjectDescription"].ToString();
+                    if (TypeofContent == "Question")
+                        answer.Item6 = TypeofContent;
+                    else
+                        answer.Item6 = reader["TypeOfContent"].ToString();
+                    answers.Add(answer);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return answers;
+        }
+
         public EchoBot(IConfiguration iconfig)
         {
             configuration = iconfig;
             helloImage = configuration.GetSection("BaseUrl").Value + configuration.GetSection("HelloImage").Value;
+            searchIcon = configuration.GetSection("BaseUrl").Value + configuration.GetSection("searchIcon").Value;
         }
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
@@ -104,7 +199,7 @@ namespace EchoBot1.Bots
             var adaptiveCardJson = File.ReadAllText(Path.Combine(paths));
             Series[] series = new Series[]
             {
-                new Series{name = "One Piece", genre="Pirates World-Building"},
+                new Series{name = "One Piece", genre="Pirats World-Building"},
                 new Series{name = "The Boys", genre="Sci-Fi Super Hero"},
                 new Series{name = "Money Heist", genre="Thriller"},
             };
@@ -185,8 +280,8 @@ namespace EchoBot1.Bots
         {
             var text = query?.Parameters?[0]?.Value as string ?? string.Empty;
 
-            var packages = await GetSuggestions(text);
-
+            string user = turnContext.Activity.From.Id;
+            var packages = GetSuggestions(text,user);
             // We take every row of the results and wrap them in cards wrapped in in MessagingExtensionAttachment objects.
             // The Preview is optional, if it includes a Tap, that will trigger the OnTeamsMessagingExtensionSelectItemAsync event back on this bot.
             var attachments = packages.Select(package =>
@@ -217,58 +312,71 @@ namespace EchoBot1.Bots
             };
         }
 
-        private Task<IEnumerable<(string,string)>> GetSuggestions(string text)
+        private IEnumerable<(string,string)> GetSuggestions(string text, string user)
         {
-            //logic here remaining
-            var suggestions = new List<(string,string)>
+            List<(string, string)> suggestions = new()
             {
                 ($"Search All for {text}",text),
-                ($"Search Article for {text}",text),
-                ($"Search Project Document for {text}",text),
-                ($"Search Lessons Learnt for {text}",text),
-                ($"Search Procedure for {text}",text),
-                ($"Search Templates for {text}",text),
-                ($"Search Situations for {text}",text),
             };
-            return Task.FromResult<IEnumerable<(string,string)>>(suggestions);
-        }
-        private List<CardAction> getResults(string query)
-        {
-            TimeSpan t = (DateTime.UtcNow - new DateTime(1970, 1, 1));
-            Random rnd = new Random((int)t.TotalSeconds);
-            int n = rnd.Next(1, 10);
-
-            List<CardAction> Results = new List<CardAction>();
-            for(int i=1;i<=n;i++)
+            List<string> TypeofContents = GetTypeofContents(text,user);
+            foreach (string TypeofContent in TypeofContents)
             {
-                CardAction result = new CardAction
-                {
-                    Type = ActionTypes.OpenUrl,
-                    Title = $"Google Search Result {i}",
-                    Value = $"https://www.google.com/search?q={query}"
-                };
-                Results.Add(result);
+                suggestions.Add(($"Search {TypeofContent} for {text}", text));
+            }
+            return suggestions;
+        }
+        private AdaptiveCard getResults(string TypeofContent, string query, string user)
+        {
+            var paths = new[] { ".", "Resources", "results.json" };
+            var adaptiveCardJson = File.ReadAllText(Path.Combine(paths));
+            AdaptiveCardTemplate adaptiveCardTemplate = new AdaptiveCardTemplate(adaptiveCardJson);
+            //load data
+            var answer = GetAnswer(query, TypeofContent, user);
+            Result[] results = new Result[answer.Count];
+            for (int i = 0; i < answer.Count; i++)
+            {
+                results[i] = new Result();
+                results[i].Document = answer[i].Item3;
+                results[i].Project = answer[i].Item4;
+                results[i].Answer = answer[i].Item2;
+                results[i].Context = answer[i].Item6;
+                results[i].Description = answer[i].Item5;
+                results[i].number = number2word[(i + 1)];
+                results[i].searchIcon = searchIcon;
+                if (results[i].Context == "Question")
+                    results[i].type = "Answer";
+                else
+                    results[i].type = "Project Title";
             }
 
-
-            return Results;
+            var Data = new
+            {
+                query = query,
+                result = results,
+                TypeofContent = TypeofContent
+            };
+            adaptiveCardJson = adaptiveCardTemplate.Expand(Data);
+            return JsonConvert.DeserializeObject<AdaptiveCard>(adaptiveCardJson);
         }
         protected override Task<MessagingExtensionResponse> OnTeamsMessagingExtensionSelectItemAsync(ITurnContext<IInvokeActivity> turnContext, JObject query, CancellationToken cancellationToken)
         {
             // The Preview card's Tap should have a Value property assigned, this will be returned to the bot in this event. 
             var (choosedSuggetion,q) = query.ToObject<(string,string)>();
+            string user = turnContext.Activity.From.Name;
+            string beforeFor = choosedSuggetion.Split("for")[0];
+            string TypeofContent = beforeFor.Substring(beforeFor.IndexOf(" ")+1).Trim();
+            var card = getResults(TypeofContent, q, user);
 
-            var card = new ThumbnailCard
+            var preview = new ThumbnailCard
             {
-                Title = $"{choosedSuggetion}",
-                Subtitle = $"You chose {choosedSuggetion}",
-                Buttons = getResults(choosedSuggetion),
+                Title = $"{TypeofContent} for {q}",
             };
-            
+
             var attachment = new MessagingExtensionAttachment
             {
-                ContentType = ThumbnailCard.ContentType,
+                ContentType = AdaptiveCard.ContentType,
                 Content = card,
+                Preview = preview.ToAttachment(),
             };
 
             return Task.FromResult(new MessagingExtensionResponse

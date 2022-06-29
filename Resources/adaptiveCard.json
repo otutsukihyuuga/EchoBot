@@ -51,36 +51,32 @@
       ]
     },
     {
-      "type": "Container",
-      "items": [
-        {
-          "type": "ColumnSet",
-          "$data": "${series}",
-          "columns": [
-            {
-              "type": "Column",
-              "items": [
+      "type": "ColumnSet",
+      "$data": "${series}",
+      "columns": [
+          {
+            "type": "Column",
+            "items": [
                 {
                   "type": "TextBlock",
                   "separator": true,
                   "text": "${name}"
                 }
               ]
-            },
-            {
-              "type": "Column",
-              "items": [
-                {
-                  "type": "TextBlock",
-                  "separator": true,
-                  "text": "${genre}"
-                }
-              ]
-            }
-          ]
-        }
+          },
+          {
+            "type": "Column",
+            "items": [
+              {
+                "type": "TextBlock",
+                "separator": true,
+                "text": "${genre}"
+              }
+            ]
+          }
       ]
-    }
+    }    
+    
   ]
 }
 
